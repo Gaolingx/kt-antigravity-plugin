@@ -2,11 +2,16 @@ import json
 import threading
 import time
 from pathlib import Path
+from types import SimpleNamespace
 
 import httpx
 import pytest
 from kohakuterrarium.llm.base import ToolSchema
 from kohakuterrarium.llm.media.reference import session_media_scope
+from kohakuterrarium.llm.profiles.api_keys import (
+    clear_api_key_resolver,
+    register_api_key_resolver,
+)
 
 from kt_antigravity_login import auth
 from kt_antigravity_login.auth import AntigravityError, BorrowedCredential
@@ -666,3 +671,44 @@ async def test_malformed_success_response_is_redacted_and_not_retried():
     assert attempts == [1]
     assert provider.last_tool_calls == []
     assert provider.last_assistant_extra_fields == {}
+
+
+def profile(**overrides):
+    """A resolved-profile stand-in carrying only the fields the provider reads."""
+    fields = {
+        "model": "gemini-4-argon",
+        "base_url": "",
+        "api_key_env": "",
+        "temperature": None,
+        "max_output": 0,
+        "reasoning_effort": "",
+        "extra_body": None,
+        "retry_policy": None,
+    }
+    fields.update(overrides)
+    return SimpleNamespace(**fields)
+
+
+def test_from_profile_builds_the_profiled_model():
+    provider = AntigravityProvider.from_profile(
+        profile(max_output=4096, reasoning_effort="low")
+    )
+    assert provider.config.model == "gemini-4-argon"
+    assert provider.config.max_tokens == 4096
+    assert provider.reasoning_effort == "low"
+
+
+def test_from_profile_rejects_a_custom_endpoint():
+    with pytest.raises(AntigravityError) as failure:
+        AntigravityProvider.from_profile(profile(base_url="https://agy.test"))
+    assert failure.value.code == "custom_endpoint_not_supported"
+
+
+def test_from_profile_refuses_a_worker_node():
+    register_api_key_resolver(lambda provider: "")
+    try:
+        with pytest.raises(AntigravityError) as failure:
+            AntigravityProvider.from_profile(profile())
+    finally:
+        clear_api_key_resolver()
+    assert failure.value.code == "local_host_only"

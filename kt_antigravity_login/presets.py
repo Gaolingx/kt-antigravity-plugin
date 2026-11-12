@@ -2,8 +2,8 @@
 
 from dataclasses import dataclass
 
-# The backend type this package contributes; preset names mirror the built-ins.
-PROVIDER = "google-antigravity-plugin"
+# The built-in backend type this package owns; preset names mirror the built-ins.
+PROVIDER = "google-antigravity"
 
 
 @dataclass(frozen=True)

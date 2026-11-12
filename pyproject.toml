@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kt-antigravity-plugin"
-version = "0.1.0"
-description = "Reuse a local agy sign-in as a KohakuTerrarium provider."
+version = "0.2.0"
+description = "Reuse a local agy sign-in as the KohakuTerrarium Google Antigravity provider."
 requires-python = ">=3.10"
 # kohakuterrarium itself is intentionally not a dependency: this package is
 # installed by KohakuTerrarium and always runs inside it.

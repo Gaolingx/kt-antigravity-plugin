@@ -8,21 +8,26 @@ from kt_antigravity_login.presets import PRESETS, PROVIDER
 
 ROOT = Path(__file__).resolve().parents[1]
 ENTRY_KEYS = {"module", "class", "display_name", "description", "credentials"}
+BUILTIN_TYPE = "google-antigravity"
 
 
 def manifest():
     return yaml.safe_load((ROOT / "kohaku.yaml").read_text(encoding="utf-8"))
 
 
-def test_backend_entry_declares_its_own_type_and_local_auth():
+def test_provider_is_the_builtin_type_the_package_owns():
+    assert PROVIDER == BUILTIN_TYPE
+
+
+def test_backend_entry_owns_the_builtin_type_and_its_local_auth():
     entry = manifest()["llm_backends"][0]
-    assert entry["name"] == PROVIDER
+    assert entry["name"] == BUILTIN_TYPE
     assert entry["class"] == "AntigravityProvider"
-    assert entry["display_name"] == "Google Antigravity (Plugin)"
+    assert entry["display_name"] == "Google Antigravity"
     assert entry["description"] == "Reuse the local agy login."
     assert entry["credentials"] == "external"
     assert entry["provider_native_tools"] == []
-    assert entry["owns_builtin"] is False
+    assert entry["owns_builtin"] is True
     assert entry["auth"] == {
         "module": "kt_antigravity_login.status",
         "class": "AntigravityAuth",
@@ -30,6 +35,10 @@ def test_backend_entry_declares_its_own_type_and_local_auth():
         "login_hint": "Run agy to sign in.",
     }
     assert ENTRY_KEYS <= set(entry)
+
+
+def test_manifest_declares_one_backend_so_settings_shows_one_row():
+    assert len(manifest()["llm_backends"]) == 1
 
 
 def test_presets_are_generated_from_the_catalogue():

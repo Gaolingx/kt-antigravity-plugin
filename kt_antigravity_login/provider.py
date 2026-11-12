@@ -5,6 +5,7 @@ from uuid import uuid4
 
 import httpx
 from kohakuterrarium.llm.base import BaseLLMProvider, ChatResponse, LLMConfig
+from kohakuterrarium.llm.profiles import api_keys
 from kohakuterrarium.llm.recovery.errors import RetryPolicy
 
 from .auth import AgyCredentials, AntigravityError
@@ -29,6 +30,15 @@ from .status import AntigravityAuth
 from .stream import Turn, read_events
 
 
+def _worker_node() -> bool:
+    """True when a host credential resolver is installed, i.e. a worker node.
+
+    The agy credential is host-local, so a worker cannot borrow it; the core
+    refuses the same build for its bundled provider.
+    """
+    return getattr(api_keys, "_resolver", None) is not None
+
+
 class AntigravityProvider(BaseLLMProvider):
     """Stream text and signed function calls through the agy consumer protocol."""
 
@@ -37,6 +47,8 @@ class AntigravityProvider(BaseLLMProvider):
     @classmethod
     def from_profile(cls, profile):
         """Build the provider for a resolved profile of this backend type."""
+        if _worker_node():
+            raise AntigravityError("local_host_only")
         if profile.base_url or profile.api_key_env:
             raise AntigravityError("custom_endpoint_not_supported")
         return cls(

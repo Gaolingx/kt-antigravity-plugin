@@ -1,4 +1,4 @@
-"""Sign-in status for the ``google-antigravity-plugin`` backend.
+"""Sign-in status for the ``google-antigravity`` backend.
 
 The backend borrows whatever credential the official ``agy`` CLI already owns,
 so "signed in" means "a usable local credential exists". Nothing here mints,
