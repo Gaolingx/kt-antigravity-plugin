@@ -1,0 +1,136 @@
+name: kt-antigravity-plugin
+version: 0.1.0
+framework: '>=2.3.0,<3.0.0'
+description: Reuse a local agy sign-in as a KohakuTerrarium provider.
+llm_backends:
+- name: google-antigravity-plugin
+  module: kt_antigravity_login.provider
+  class: AntigravityProvider
+  display_name: Google Antigravity (Plugin)
+  description: Reuse the local agy login.
+  credentials: external
+  provider_native_tools: []
+  owns_builtin: false
+  auth:
+    module: kt_antigravity_login.status
+    class: AntigravityAuth
+    local_only: true
+    login_hint: Run agy to sign in.
+llm_presets:
+- name: gemini-4-carbon
+  provider: google-antigravity-plugin
+  model: gemini-4-carbon
+  max_context: 256000
+  max_output: 65536
+  provider_native_tools: []
+  reasoning_effort: medium
+  variation_groups:
+    reasoning:
+      low:
+        reasoning_effort: low
+      medium:
+        reasoning_effort: medium
+      high:
+        reasoning_effort: high
+    context:
+      256k:
+        max_context: 256000
+      512k:
+        max_context: 512000
+      900k:
+        max_context: 900000
+- name: gemini-4-argon
+  provider: google-antigravity-plugin
+  model: gemini-4-argon
+  max_context: 256000
+  max_output: 65536
+  provider_native_tools: []
+  reasoning_effort: medium
+  variation_groups:
+    reasoning:
+      low:
+        reasoning_effort: low
+      medium:
+        reasoning_effort: medium
+      high:
+        reasoning_effort: high
+    context:
+      256k:
+        max_context: 256000
+      512k:
+        max_context: 512000
+      900k:
+        max_context: 900000
+- name: gemini-3.8-flash
+  provider: google-antigravity-plugin
+  model: gemini-3.8-flash
+  max_context: 256000
+  max_output: 65536
+  provider_native_tools: []
+  reasoning_effort: medium
+  variation_groups:
+    reasoning:
+      low:
+        reasoning_effort: low
+      medium:
+        reasoning_effort: medium
+      high:
+        reasoning_effort: high
+    context:
+      256k:
+        max_context: 256000
+      1048k:
+        max_context: 1048576
+- name: claude-opus-5-5
+  provider: google-antigravity-plugin
+  model: claude-opus-5-5
+  max_context: 256000
+  max_output: 128000
+  provider_native_tools: []
+  reasoning_effort: medium
+  variation_groups:
+    reasoning:
+      low:
+        reasoning_effort: low
+      medium:
+        reasoning_effort: medium
+      high:
+        reasoning_effort: high
+    context:
+      256k:
+        max_context: 256000
+      840k:
+        max_context: 840000
+- name: claude-sonnet-5-5
+  provider: google-antigravity-plugin
+  model: claude-sonnet-5-5
+  max_context: 256000
+  max_output: 128000
+  provider_native_tools: []
+  reasoning_effort: medium
+  variation_groups:
+    reasoning:
+      low:
+        reasoning_effort: low
+      medium:
+        reasoning_effort: medium
+      high:
+        reasoning_effort: high
+    context:
+      256k:
+        max_context: 256000
+      840k:
+        max_context: 840000
+- name: gpt-oss-120b
+  provider: google-antigravity-plugin
+  model: gpt-oss-120b
+  max_context: 80000
+  max_output: 32768
+  provider_native_tools: []
+  reasoning_effort: medium
+  variation_groups:
+    context:
+      80k:
+        max_context: 80000
+      131k:
+        max_context: 131072

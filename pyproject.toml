@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kt-antigravity-plugin"
+version = "0.1.0"
+description = "Reuse a local agy sign-in as a KohakuTerrarium provider."
+requires-python = ">=3.10"
+# kohakuterrarium itself is intentionally not a dependency: this package is
+# installed by KohakuTerrarium and always runs inside it.
+dependencies = ["httpx", "pyyaml"]
+
+[tool.setuptools]
+packages = ["kt_antigravity_login"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+timeout = 60
+
+[tool.black]
+line-length = 88
+
+[tool.ruff.lint]
+preview = true
+explicit-preview-rules = true
+select = ["F401", "F841", "PLW1514"]
